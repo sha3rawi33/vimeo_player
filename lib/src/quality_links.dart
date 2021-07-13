@@ -14,18 +14,15 @@ class QualityLinks {
     return getQualitiesAsync();
   }
 
-  Future<SplayTreeMap?> getQualitiesAsync() async {
+  Future<SplayTreeMap> getQualitiesAsync() async {
     try {
-      var response = await http
-          .get(Uri.parse('https://player.vimeo.com/video/' + videoId + '/config'));
-      var jsonData =
-          jsonDecode(response.body)['request']['files']['progressive'];
-      SplayTreeMap videoList = SplayTreeMap.fromIterable(jsonData,
-          key: (item) => "${item['quality']} ${item['fps']}",
-          value: (item) => item['url']);
+      var response = await http.get(Uri.parse('https://player.vimeo.com/video/' + videoId + '/config'));
+      var jsonData = jsonDecode(response.body)['request']['files']['progressive'];
+      SplayTreeMap videoList = SplayTreeMap.fromIterable(jsonData, key: (item) => "${item['quality']}", value: (item) => item['url']);
+      var beforeList = videoList.remove("240p");
       return videoList;
     } catch (error) {
-      print('=====> REQUEST ERROR: $error');
+      // print('=====> REQUEST ERROR: $error');
       return null;
     }
   }
